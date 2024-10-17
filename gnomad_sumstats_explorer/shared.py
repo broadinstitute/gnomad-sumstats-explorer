@@ -5,31 +5,34 @@ from pathlib import Path
 import pandas as pd
 
 app_dir = Path(__file__).parent
-df = pd.read_csv(app_dir / "../data/gnomad.exomes.v4.1.per_sample_variant_counts.csv", keep_default_na=False)
+df = pd.read_csv(
+    app_dir / "../data/gnomad.exomes.v4.1.per_sample_variant_counts.csv",
+    keep_default_na=False,
+)
 
 metrics = [
     "n_non_ref",
     "n_non_ref_alleles",
     "n_het",
-    "n_hom_var", 
+    "n_hom_var",
     "n_hemi_var",
     "n_snp",
     "n_indel",
-    "n_insertion", 
+    "n_insertion",
     "n_deletion",
     "n_transition",
-    "n_transversion", 
-    "n_singleton", 
-    "n_singleton_ti", 
+    "n_transversion",
+    "n_singleton",
+    "n_singleton_ti",
     "n_singleton_tv",
-    "n_over_gq_60", 
-    "n_over_dp_20", 
+    "n_over_gq_60",
+    "n_over_dp_20",
     "n_over_dp_30",
-    "r_ti_tv", 
+    "r_ti_tv",
     "r_ti_tv_singleton",
-    "r_het_hom_var", 
+    "r_het_hom_var",
     "r_insertion_deletion",
-    "n_high_ab_het_ref", 
+    "n_high_ab_het_ref",
 ]
 gen_anc_order = [
     "global",
@@ -76,7 +79,7 @@ POP_NAMES = {
     "oeu": "Other European",
     "onf": "Other Non-Finnish European",
     "unk": "Unknown",
-    "global": "All"
+    "global": "All",
 }
 
 POP_COLORS = {
@@ -111,7 +114,7 @@ POP_COLORS = {
     "remaining": "#ABB9B9",
     "": "#ABB9B9",
     "mid": "#33CC33",
-    "global": "#000000"
+    "global": "#000000",
 }
 color_map = {POP_NAMES[x]: POP_COLORS[x] for x in gen_anc_order}
 gen_anc_order_mapped = [POP_NAMES[x] for x in gen_anc_order]

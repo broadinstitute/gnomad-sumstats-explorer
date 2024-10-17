@@ -1,18 +1,17 @@
 """Simple Shiny app to explore gnomAD v4.1 summary statistics."""
-from shared import app_dir, df, metrics, POP_NAMES, color_map, gen_anc_order_mapped
 
 import plotly.graph_objects as go
 from plotly.graph_objs import FigureWidget
+from shared import POP_NAMES, app_dir, color_map, df, gen_anc_order_mapped, metrics
 from shiny import reactive
 from shiny import ui as sui
 from shiny.express import input, render, ui
 from shinywidgets import render_widget
 
-
 ui.include_css(app_dir / "styles.css")
 ui.page_opts(
     title=sui.row(
-        sui.column(4, ui.img(src = "gnomad_logo.png", height="75")),
+        sui.column(4, ui.img(src="gnomad_logo.png", height="75")),
         sui.column(
             8,
             ui.div(
@@ -21,8 +20,8 @@ ui.page_opts(
             ),
         ),
     ),
-    #full_width=True,
-    fillable=True
+    # full_width=True,
+    fillable=True,
 )
 
 with ui.sidebar(title="Filter controls"):
@@ -34,13 +33,13 @@ with ui.sidebar(title="Filter controls"):
         "sex_chr_nonpar_group",
         "Select autosome/PAR or non-PAR",
         choices=["autosome_or_par", "x_nonpar", "y_nonpar"],
-        selected="autosome_or_par"
+        selected="autosome_or_par",
     )
     ui.input_selectize(
         "capture",
         "Filter by capture intervals",
         choices=["", "ukb_broad_union", "broad", "ukb", "ukb_broad_intersect"],
-        selected=""
+        selected="",
     )
     ui.input_selectize(
         "csq_set",
@@ -63,25 +62,22 @@ with ui.sidebar(title="Filter controls"):
             "splice_donor_variant",
             "splice_acceptor_variant",
         ],
-        selected=""
+        selected="",
     )
     ui.input_selectize(
-        "loftee_label",
-        "Filter by LOFTEE label",
-        choices=["", "HC", "LC"],
-        selected=""
+        "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected=""
     )
     ui.input_selectize(
         "loftee_flags",
         "Filter by LOFTEE flags",
         choices=["", "no_flags", "with_flags"],
-        selected=""
+        selected="",
     )
     ui.input_selectize(
         "max_af",
         "Filter by max AF",
         choices=["", "0.0001", "0.001", "0.01"],
-        selected=""
+        selected="",
     )
 
 with ui.layout_column_wrap(fill=False):
@@ -90,6 +86,7 @@ with ui.layout_column_wrap(fill=False):
 
         @render.text
         def count():
+            """Get the number of rows in the filtered dataframe."""
             return filtered_df().shape[0]
 
     with ui.value_box():
@@ -97,6 +94,7 @@ with ui.layout_column_wrap(fill=False):
 
         @render.text
         def bill_length():
+            """Get the global mean of the selected metric."""
             return f"{filtered_df_global_mean():.1f}"
 
 
@@ -104,9 +102,10 @@ with ui.layout_columns():
     with ui.card(full_screen=True):
         ui.card_header("Per-sample summary statistics distributions")
 
-        #@output(suspend_when_hidden=False)
+        # @output(suspend_when_hidden=False)
         @render_widget
         def length_depth():
+            """Create a boxplot of the selected metric."""
             filt_df = filtered_df()
             return create_boxplot_figure(filt_df)
 
@@ -115,6 +114,7 @@ with ui.layout_columns():
 
         @render.data_frame
         def summary_statistics():
+            """Show the summary statistics."""
             cols = [
                 "subset",
                 "gen_anc",
@@ -124,8 +124,10 @@ with ui.layout_columns():
             ]
             return render.DataGrid(filtered_df()[cols], filters=True)
 
+
 @reactive.calc
 def metric_filtered_df():
+    """Filter the dataframe based on the selected metric and other filters."""
     metric = input.select_metric()
     variant_qc_pass = "pass" if input.variant_qc_pass() else ""
     sex_chr_nonpar_group = input.sex_chr_nonpar_group()
@@ -136,14 +138,14 @@ def metric_filtered_df():
     loftee_flags = input.loftee_flags()
     max_af = input.max_af()
     filt_df = df[
-        (df['sex_chr_nonpar_group'] == sex_chr_nonpar_group)
-        & (df['variant_qc'] == variant_qc_pass)
-        & (df['capture'] == capture)
-        & (df['csq_set'] == csq_set)
-        & (df['csq'] == csq)
-        & (df['loftee_label'] == loftee_label)
-        & (df['loftee_flags'] == loftee_flags)
-        & (df['max_af'] == max_af)
+        (df["sex_chr_nonpar_group"] == sex_chr_nonpar_group)
+        & (df["variant_qc"] == variant_qc_pass)
+        & (df["capture"] == capture)
+        & (df["csq_set"] == csq_set)
+        & (df["csq"] == csq)
+        & (df["loftee_label"] == loftee_label)
+        & (df["loftee_flags"] == loftee_flags)
+        & (df["max_af"] == max_af)
     ]
     rename_map = {
         "min": "Minimum",
@@ -157,38 +159,61 @@ def metric_filtered_df():
         columns={f"{metric}_{k}": v for k, v in rename_map.items()}
     )
 
-    id_vars = ["subset", "gen_anc", "sex_chr_nonpar_group", "variant_qc", "capture",
-               "csq_set", "csq", "loftee_label", "loftee_flags", "max_af"]
-    filt_df = filt_df[
-        id_vars + ["Minimum", "Q1", "Median", "Q3", "Maximum", "Mean"]
+    id_vars = [
+        "subset",
+        "gen_anc",
+        "sex_chr_nonpar_group",
+        "variant_qc",
+        "capture",
+        "csq_set",
+        "csq",
+        "loftee_label",
+        "loftee_flags",
+        "max_af",
     ]
+    filt_df = filt_df[id_vars + ["Minimum", "Q1", "Median", "Q3", "Maximum", "Mean"]]
 
     return filt_df
 
+
 @reactive.calc
 def filtered_df():
-    #gen_ancs = input.gen_anc()
+    """Filter the dataframe based on the selected metric and other filters."""
+    # gen_ancs = input.gen_anc()
     filt_df = metric_filtered_df()
     filt_df = filt_df.replace({"gen_anc": POP_NAMES})
-    #filt_df = filt_df[filt_df["gen_anc"].isin(gen_ancs)]
-    id_vars = ["subset", "gen_anc", "sex_chr_nonpar_group", "variant_qc", "capture",
-               "csq_set", "csq", "loftee_label", "loftee_flags", "max_af"]
+    # filt_df = filt_df[filt_df["gen_anc"].isin(gen_ancs)]
+    id_vars = [
+        "subset",
+        "gen_anc",
+        "sex_chr_nonpar_group",
+        "variant_qc",
+        "capture",
+        "csq_set",
+        "csq",
+        "loftee_label",
+        "loftee_flags",
+        "max_af",
+    ]
     filt_df = filt_df.drop(columns=["Mean"])
     filt_df = filt_df.melt(id_vars=id_vars, value_name="value")
 
     return filt_df
 
+
 def filtered_df_global_mean():
+    """Get the global mean of the selected metric."""
     filt_df = metric_filtered_df()
     filt_df = filt_df[
         (filt_df["gen_anc"] == "global") & (filt_df["subset"] == "gnomad")
     ]
     filt_df = filt_df.reset_index()
-    return filt_df.at[0, 'Mean']
+    return filt_df.at[0, "Mean"]
 
 
 # Function to create the Plotly FigureWidget.
 def create_boxplot_figure(data):
+    """Create a boxplot figure."""
     fig = go.Figure()
 
     for gen_anc in gen_anc_order_mapped:
@@ -198,7 +223,7 @@ def create_boxplot_figure(data):
                 y=data[data["gen_anc"] == gen_anc]["value"],
                 name=gen_anc,
                 marker_color=color_map[gen_anc],
-                quartilemethod="exclusive"
+                quartilemethod="exclusive",
             )
         )
     fig.update_layout(
@@ -208,6 +233,6 @@ def create_boxplot_figure(data):
         yaxis_title="Value",
         showlegend=True,
         # group together boxes of the different traces for each value of x
-        boxmode='group'
+        boxmode="group",
     )
     return FigureWidget(fig)
