@@ -2,4 +2,4 @@
 
 cd "$(dirname "$0")"
 
-PYTHONPATH=$PYTHONPATH:$(pwd) pylint "$@" tgg_repo_template tests
+PYTHONPATH=$PYTHONPATH:$(pwd) pylint "$@" gnomad_sumstats_explorer
