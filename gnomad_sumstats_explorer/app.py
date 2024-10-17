@@ -2,11 +2,19 @@
 
 import plotly.graph_objects as go
 from plotly.graph_objs import FigureWidget
-from shared import POP_NAMES, app_dir, color_map, df, gen_anc_order_mapped, metrics
 from shiny import reactive
 from shiny import ui as sui
 from shiny.express import input, render, ui
 from shinywidgets import render_widget
+
+from gnomad_sumstats_explorer.shared import (
+    POP_NAMES,
+    app_dir,
+    color_map,
+    df,
+    gen_anc_order_mapped,
+    metrics,
+)
 
 ui.include_css(app_dir / "styles.css")
 ui.page_opts(

@@ -3,3 +3,4 @@ shiny
 shinywidgets
 seaborn
 pandas
+plotly
