@@ -11,19 +11,19 @@ repos:
     hooks:
       - id: black
         language_version: python3
-        files: tgg_repo_template
+        files: gnomad_sumstats_explorer
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v2.0.2 # This should be kept in sync with the version in requirements-dev.in
     hooks:
       - id: autopep8
         args: ["--exit-code", "--in-place"]
-        files: tgg_repo_template
+        files: gnomad_sumstats_explorer
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0 # This should be kept in sync with the version in requirements-dev.in
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
-        files: tgg_repo_template
+        files: gnomad_sumstats_explorer
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0 # This should be kept in sync with the version in requirements-dev.in
     hooks:
