@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+
+disable=
+  invalid-unary-operand-type,
+  # Ignore unnecessary-lambda because it has many false positives from hl.ArrayExpression.map, etc.
+  unnecessary-lambda,
+  # Ignore refactor and convention categories
+  R,
+  C
