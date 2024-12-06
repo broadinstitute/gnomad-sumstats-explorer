@@ -88,23 +88,6 @@ with ui.sidebar(title="Filter controls"):
         selected="",
     )
 
-with ui.layout_column_wrap(fill=False):
-    with ui.value_box():
-        "Number of rows"
-
-        @render.text
-        def count():
-            """Get the number of rows in the filtered dataframe."""
-            return filtered_df().shape[0]
-
-    with ui.value_box():
-        "Full dataset mean"
-
-        @render.text
-        def bill_length():
-            """Get the global mean of the selected metric."""
-            return f"{filtered_df_global_mean():.1f}"
-
 
 with ui.layout_columns():
     with ui.card(full_screen=True):
@@ -117,6 +100,8 @@ with ui.layout_columns():
             filt_df = filtered_df()
             return create_boxplot_figure(filt_df)
 
+
+with ui.layout_columns():
     with ui.card(full_screen=True):
         ui.card_header("")
 
