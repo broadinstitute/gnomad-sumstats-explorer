@@ -48,12 +48,14 @@ with ui.sidebar(title="Filter controls"):
         "Filter by capture intervals",
         choices=["", "ukb_broad_union", "broad", "ukb", "ukb_broad_intersect"],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
         "csq_set",
         "Filter by CSQ set",
         choices=["", "non-coding", "coding", "lof"],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
         "csq",
@@ -71,21 +73,24 @@ with ui.sidebar(title="Filter controls"):
             "splice_acceptor_variant",
         ],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
-        "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected=""
+        "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected="", remove_button=True,
     )
     ui.input_selectize(
         "loftee_flags",
         "Filter by LOFTEE flags",
         choices=["", "no_flags", "with_flags"],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
         "max_af",
         "Filter by max AF",
         choices=["", "0.0001", "0.001", "0.01"],
         selected="",
+        remove_button=True,
     )
 
 
