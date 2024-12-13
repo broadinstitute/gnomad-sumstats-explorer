@@ -80,7 +80,11 @@ with ui.sidebar(title="Filter controls"):
         "input.csq_set == 'lof' || input.csq == 'frameshift_variant' || input.csq == 'stop_gained' || input.csq == 'splice_donor_variant' || input.csq == 'splice_acceptor_variant'",
     ):
         ui.input_selectize(
-            "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected="", remove_button=True,
+            "loftee_label",
+            "Filter by LOFTEE label",
+            choices=["", "HC", "LC"],
+            selected="",
+            remove_button=True,
         )
         ui.input_selectize(
             "loftee_flags",
@@ -143,7 +147,9 @@ def metric_filtered_df():
 
     # Double check to make sure csq_set and csq aren't both selected
     if input.csq_set() != "" and input.csq() != "":
-        raise ValueError("Cannot select values for both consequence set and variant consequence.")
+        raise ValueError(
+            "Cannot select values for both consequence set and variant consequence."
+        )
 
     filt_df = df[
         (df["sex_chr_nonpar_group"] == sex_chr_nonpar_group)
