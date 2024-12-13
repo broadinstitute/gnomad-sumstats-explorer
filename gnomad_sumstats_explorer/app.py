@@ -9,6 +9,7 @@ from shinywidgets import render_widget
 
 from gnomad_sumstats_explorer.shared import (
     GEN_ANC_NAMES,
+    accessible_color_map,
     app_dir,
     color_map,
     df,
@@ -97,13 +98,14 @@ with ui.sidebar(title="Filter controls"):
 with ui.layout_columns():
     with ui.card(full_screen=True):
         ui.card_header("Per-sample summary statistics distributions")
+        ui.input_switch("accessible", "Colorblind accessible", False)
 
         # @output(suspend_when_hidden=False)
         @render_widget
         def length_depth():
             """Create a boxplot of the selected metric."""
             filt_df = filtered_df()
-            return create_boxplot_figure(filt_df)
+            return create_boxplot_figure(filt_df, input.accessible())
 
 
 with ui.layout_columns():
@@ -210,20 +212,33 @@ def filtered_df_global_mean():
 
 
 # Function to create the Plotly FigureWidget.
-def create_boxplot_figure(data):
+def create_boxplot_figure(data, accessible):
     """Create a boxplot figure."""
     fig = go.Figure()
 
-    for gen_anc in gen_anc_order_mapped:
-        fig.add_trace(
-            go.Box(
-                x=data[data["gen_anc"] == gen_anc]["subset"],
-                y=data[data["gen_anc"] == gen_anc]["value"],
-                name=gen_anc,
-                marker_color=color_map[gen_anc],
-                quartilemethod="exclusive",
+    if accessible:
+        for gen_anc in gen_anc_order_mapped:
+            fig.add_trace(
+                go.Box(
+                    x=data[data["gen_anc"] == gen_anc]["subset"],
+                    y=data[data["gen_anc"] == gen_anc]["value"],
+                    name=gen_anc,
+                    fillcolor=accessible_color_map[gen_anc],
+                    quartilemethod="exclusive",
+                    line_color="black",
+                )
             )
-        )
+    else:
+        for gen_anc in gen_anc_order_mapped:
+            fig.add_trace(
+                go.Box(
+                    x=data[data["gen_anc"] == gen_anc]["subset"],
+                    y=data[data["gen_anc"] == gen_anc]["value"],
+                    name=gen_anc,
+                    marker_color=color_map[gen_anc],
+                    quartilemethod="exclusive",
+                )
+            )
     fig.update_layout(
         template="simple_white",
         legend_title="Genetic Ancestry",

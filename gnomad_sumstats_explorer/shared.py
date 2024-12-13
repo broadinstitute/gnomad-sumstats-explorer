@@ -118,3 +118,22 @@ GEN_ANC_COLORS = {
 }
 color_map = {GEN_ANC_NAMES[x]: GEN_ANC_COLORS[x] for x in gen_anc_order}
 gen_anc_order_mapped = [GEN_ANC_NAMES[x] for x in gen_anc_order]
+
+# Used Paul Tol's muted palette with added colors:
+# white, #000000, #004488
+# This still isn't accessible for monochromacy/achromatopsia
+GEN_ANC_COLORS_ACCESSIBLE = {
+    "afr": "#CC6677",
+    "ami": "#332288",
+    "amr": "#DDCC77",
+    "asj": "#117733",
+    "eas": "#88CCEE",
+    "eur": "#882255",
+    "fin": "#44AA99",
+    "nfe": "#999933",
+    "sas": "#AA4499",
+    "remaining": "white",
+    "mid": "#004488",
+    "global": "#000000",
+}
+accessible_color_map = {GEN_ANC_NAMES[x]: GEN_ANC_COLORS_ACCESSIBLE[x] for x in gen_anc_order}
