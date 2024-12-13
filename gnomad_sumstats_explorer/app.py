@@ -98,7 +98,7 @@ with ui.sidebar(title="Filter controls"):
 with ui.layout_columns():
     with ui.card(full_screen=True):
         ui.card_header("Per-sample summary statistics distributions")
-        ui.input_switch("accessible", "Colorblind accessible", False)
+        ui.input_switch("accessible", "Accessible colors", False)
 
         # @output(suspend_when_hidden=False)
         @render_widget
