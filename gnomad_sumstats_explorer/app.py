@@ -8,7 +8,7 @@ from shiny.express import input, render, ui
 from shinywidgets import render_widget
 
 from gnomad_sumstats_explorer.shared import (
-    POP_NAMES,
+    GEN_ANC_NAMES,
     app_dir,
     color_map,
     df,
@@ -179,7 +179,7 @@ def filtered_df():
     """Filter the dataframe based on the selected metric and other filters."""
     # gen_ancs = input.gen_anc()
     filt_df = metric_filtered_df()
-    filt_df = filt_df.replace({"gen_anc": POP_NAMES})
+    filt_df = filt_df.replace({"gen_anc": GEN_ANC_NAMES})
     # filt_df = filt_df[filt_df["gen_anc"].isin(gen_ancs)]
     id_vars = [
         "subset",

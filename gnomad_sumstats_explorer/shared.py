@@ -47,7 +47,7 @@ gen_anc_order = [
     "remaining",
 ]
 
-POP_NAMES = {
+GEN_ANC_NAMES = {
     "afr": "African/African-American",
     "ami": "Amish",
     "amr": "Admixed American",
@@ -82,7 +82,7 @@ POP_NAMES = {
     "global": "All",
 }
 
-POP_COLORS = {
+GEN_ANC_COLORS = {
     "afr": "#941494",
     "ami": "#FFC0CB",
     "amr": "#ED1E24",
@@ -116,5 +116,5 @@ POP_COLORS = {
     "mid": "#33CC33",
     "global": "#000000",
 }
-color_map = {POP_NAMES[x]: POP_COLORS[x] for x in gen_anc_order}
-gen_anc_order_mapped = [POP_NAMES[x] for x in gen_anc_order]
+color_map = {GEN_ANC_NAMES[x]: GEN_ANC_COLORS[x] for x in gen_anc_order}
+gen_anc_order_mapped = [GEN_ANC_NAMES[x] for x in gen_anc_order]
