@@ -40,7 +40,7 @@ with ui.sidebar(title="Filter controls"):
     ui.input_switch("variant_qc_pass", "Pass variant QC", True)
     ui.input_selectize(
         "sex_chr_nonpar_group",
-        "Select autosome/PAR or non-PAR",
+        "Select locus type",
         choices=["autosome_or_par", "x_nonpar", "y_nonpar"],
         selected="autosome_or_par",
     )
