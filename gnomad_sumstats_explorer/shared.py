@@ -136,4 +136,6 @@ GEN_ANC_COLORS_ACCESSIBLE = {
     "mid": "#004488",
     "global": "#000000",
 }
-accessible_color_map = {GEN_ANC_NAMES[x]: GEN_ANC_COLORS_ACCESSIBLE[x] for x in gen_anc_order}
+accessible_color_map = {
+    GEN_ANC_NAMES[x]: GEN_ANC_COLORS_ACCESSIBLE[x] for x in gen_anc_order
+}
