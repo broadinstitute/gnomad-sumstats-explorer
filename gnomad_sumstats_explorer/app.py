@@ -76,16 +76,19 @@ with ui.sidebar(title="Filter controls"):
         selected="",
         remove_button=True,
     )
-    ui.input_selectize(
-        "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected="", remove_button=True,
-    )
-    ui.input_selectize(
-        "loftee_flags",
-        "Filter by LOFTEE flags",
-        choices=["", "no_flags", "with_flags"],
-        selected="",
-        remove_button=True,
-    )
+    with ui.panel_conditional(
+        "input.csq_set == 'lof' || input.csq == 'frameshift_variant' || input.csq == 'stop_gained' || input.csq == 'splice_donor_variant' || input.csq == 'splice_acceptor_variant'",
+    ):
+        ui.input_selectize(
+            "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected="", remove_button=True,
+        )
+        ui.input_selectize(
+            "loftee_flags",
+            "Filter by LOFTEE flags",
+            choices=["", "no_flags", "with_flags"],
+            selected="",
+            remove_button=True,
+        )
     ui.input_selectize(
         "max_af",
         "Filter by max AF",
