@@ -182,7 +182,7 @@ def filtered_df():
     # gen_ancs = input.gen_anc()
     filt_df = metric_filtered_df()
     filt_df = filt_df.replace({"gen_anc": GEN_ANC_NAMES})
-    # filt_df = filt_df[filt_df["gen_anc"].isin(gen_ancs)]
+
     id_vars = [
         "subset",
         "gen_anc",
