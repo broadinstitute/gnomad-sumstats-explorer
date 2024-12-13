@@ -54,7 +54,7 @@ with ui.sidebar(title="Filter controls"):
     ui.input_selectize(
         "csq_set",
         "Filter by consequence set",
-        choices=["", "non-coding", "coding", "lof"],
+        choices=["", "non_coding", "coding", "lof"],
         selected="",
         remove_button=True,
     )
