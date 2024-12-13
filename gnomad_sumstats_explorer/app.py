@@ -140,6 +140,11 @@ def metric_filtered_df():
     loftee_label = input.loftee_label()
     loftee_flags = input.loftee_flags()
     max_af = input.max_af()
+
+    # Double check to make sure csq_set and csq aren't both selected
+    if input.csq_set() != "" and input.csq() != "":
+        raise ValueError("Cannot select values for both consequence set and variant consequence.")
+
     filt_df = df[
         (df["sex_chr_nonpar_group"] == sex_chr_nonpar_group)
         & (df["variant_qc"] == variant_qc_pass)
