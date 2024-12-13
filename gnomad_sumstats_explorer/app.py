@@ -53,14 +53,14 @@ with ui.sidebar(title="Filter controls"):
     )
     ui.input_selectize(
         "csq_set",
-        "Filter by CSQ set",
+        "Filter by consequence set",
         choices=["", "non-coding", "coding", "lof"],
         selected="",
         remove_button=True,
     )
     ui.input_selectize(
         "csq",
-        "Filter by CSQ",
+        "Filter by variant consequence",
         choices=[
             "",
             "missense_variant",
