@@ -8,7 +8,8 @@ from shiny.express import input, render, ui
 from shinywidgets import render_widget
 
 from gnomad_sumstats_explorer.shared import (
-    POP_NAMES,
+    GEN_ANC_NAMES,
+    accessible_color_map,
     app_dir,
     color_map,
     df,
@@ -39,7 +40,7 @@ with ui.sidebar(title="Filter controls"):
     ui.input_switch("variant_qc_pass", "Pass variant QC", True)
     ui.input_selectize(
         "sex_chr_nonpar_group",
-        "Select autosome/PAR or non-PAR",
+        "Select locus type",
         choices=["autosome_or_par", "x_nonpar", "y_nonpar"],
         selected="autosome_or_par",
     )
@@ -48,16 +49,18 @@ with ui.sidebar(title="Filter controls"):
         "Filter by capture intervals",
         choices=["", "ukb_broad_union", "broad", "ukb", "ukb_broad_intersect"],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
         "csq_set",
-        "Filter by CSQ set",
-        choices=["", "non-coding", "coding", "lof"],
+        "Filter by consequence set",
+        choices=["", "non_coding", "coding", "lof"],
         selected="",
+        remove_button=True,
     )
     ui.input_selectize(
         "csq",
-        "Filter by CSQ",
+        "Filter by variant consequence",
         choices=[
             "",
             "missense_variant",
@@ -71,34 +74,45 @@ with ui.sidebar(title="Filter controls"):
             "splice_acceptor_variant",
         ],
         selected="",
+        remove_button=True,
     )
-    ui.input_selectize(
-        "loftee_label", "Filter by LOFTEE label", choices=["", "HC", "LC"], selected=""
-    )
-    ui.input_selectize(
-        "loftee_flags",
-        "Filter by LOFTEE flags",
-        choices=["", "no_flags", "with_flags"],
-        selected="",
-    )
+    with ui.panel_conditional(
+        "input.csq_set == 'lof' || input.csq == 'frameshift_variant' || input.csq == 'stop_gained' || input.csq == 'splice_donor_variant' || input.csq == 'splice_acceptor_variant'",
+    ):
+        ui.input_selectize(
+            "loftee_label",
+            "Filter by LOFTEE label",
+            choices=["", "HC", "LC"],
+            selected="",
+            remove_button=True,
+        )
+        ui.input_selectize(
+            "loftee_flags",
+            "Filter by LOFTEE flags",
+            choices=["", "no_flags", "with_flags"],
+            selected="",
+            remove_button=True,
+        )
     ui.input_selectize(
         "max_af",
         "Filter by max AF",
         choices=["", "0.0001", "0.001", "0.01"],
         selected="",
+        remove_button=True,
     )
 
 
 with ui.layout_columns():
     with ui.card(full_screen=True):
         ui.card_header("Per-sample summary statistics distributions")
+        ui.input_switch("accessible", "Accessible colors", False)
 
         # @output(suspend_when_hidden=False)
         @render_widget
         def length_depth():
             """Create a boxplot of the selected metric."""
             filt_df = filtered_df()
-            return create_boxplot_figure(filt_df)
+            return create_boxplot_figure(filt_df, input.accessible())
 
 
 with ui.layout_columns():
@@ -130,6 +144,13 @@ def metric_filtered_df():
     loftee_label = input.loftee_label()
     loftee_flags = input.loftee_flags()
     max_af = input.max_af()
+
+    # Double check to make sure csq_set and csq aren't both selected
+    if input.csq_set() != "" and input.csq() != "":
+        raise ValueError(
+            "Cannot select values for both consequence set and variant consequence."
+        )
+
     filt_df = df[
         (df["sex_chr_nonpar_group"] == sex_chr_nonpar_group)
         & (df["variant_qc"] == variant_qc_pass)
@@ -174,8 +195,8 @@ def filtered_df():
     """Filter the dataframe based on the selected metric and other filters."""
     # gen_ancs = input.gen_anc()
     filt_df = metric_filtered_df()
-    filt_df = filt_df.replace({"gen_anc": POP_NAMES})
-    # filt_df = filt_df[filt_df["gen_anc"].isin(gen_ancs)]
+    filt_df = filt_df.replace({"gen_anc": GEN_ANC_NAMES})
+
     id_vars = [
         "subset",
         "gen_anc",
@@ -205,20 +226,33 @@ def filtered_df_global_mean():
 
 
 # Function to create the Plotly FigureWidget.
-def create_boxplot_figure(data):
+def create_boxplot_figure(data, accessible):
     """Create a boxplot figure."""
     fig = go.Figure()
 
-    for gen_anc in gen_anc_order_mapped:
-        fig.add_trace(
-            go.Box(
-                x=data[data["gen_anc"] == gen_anc]["subset"],
-                y=data[data["gen_anc"] == gen_anc]["value"],
-                name=gen_anc,
-                marker_color=color_map[gen_anc],
-                quartilemethod="exclusive",
+    if accessible:
+        for gen_anc in gen_anc_order_mapped:
+            fig.add_trace(
+                go.Box(
+                    x=data[data["gen_anc"] == gen_anc]["subset"],
+                    y=data[data["gen_anc"] == gen_anc]["value"],
+                    name=gen_anc,
+                    fillcolor=accessible_color_map[gen_anc],
+                    quartilemethod="exclusive",
+                    line_color="black",
+                )
             )
-        )
+    else:
+        for gen_anc in gen_anc_order_mapped:
+            fig.add_trace(
+                go.Box(
+                    x=data[data["gen_anc"] == gen_anc]["subset"],
+                    y=data[data["gen_anc"] == gen_anc]["value"],
+                    name=gen_anc,
+                    marker_color=color_map[gen_anc],
+                    quartilemethod="exclusive",
+                )
+            )
     fig.update_layout(
         template="simple_white",
         legend_title="Genetic Ancestry",
