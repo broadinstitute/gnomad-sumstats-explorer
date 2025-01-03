@@ -1,0 +1,12 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'us-docker.pkg.dev/$PROJECT_ID/gnomad/gnomad-sumstats-explorer:$SHORT_SHA',
+        '.',
+      ]
+
+images:
+  - 'us-docker.pkg.dev/$PROJECT_ID/gnomad/gnomad-sumstats-explorer:$SHORT_SHA'
